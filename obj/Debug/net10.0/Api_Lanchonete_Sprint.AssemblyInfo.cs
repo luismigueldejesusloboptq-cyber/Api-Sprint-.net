@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Api_Lanchonete_Sprint")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b45bd8899c181d81d623d235fcd7ee49e051f9c3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Api_Lanchonete_Sprint")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Api_Lanchonete_Sprint")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
