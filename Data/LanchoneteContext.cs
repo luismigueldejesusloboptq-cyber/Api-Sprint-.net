@@ -14,19 +14,20 @@ namespace Api_Lanchonete_Sprint.Data
         {
         }
 
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Categorias> Categoria { get; set; }
-        public DbSet<Produtos> Produto { get; set; }
-        public DbSet<ItemVenda> ItemVenda { get; set; }
-        public DbSet<Venda> vendas { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
+        public DbSet<fornecedores> fornecedores  { get; set; }
+        public DbSet<ItensPedido> ItensPedidos { get; set; }
+        public DbSet<Pedidos> pedidos { get; set; }
+        
+        public DbSet<Produtos> produtosd { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new ClienteMap());
-            modelBuilder.ApplyConfiguration(new CategoriaMap());
-            modelBuilder.ApplyConfiguration(new ProdutoMap());
-            modelBuilder.ApplyConfiguration(new VendaMap());
-            modelBuilder.ApplyConfiguration(new ItemVendaMap());
+            modelBuilder.ApplyConfiguration(new CategoriasMap());
+            modelBuilder.ApplyConfiguration(new fornecedoresMap());
+            modelBuilder.ApplyConfiguration(new ItensPedidoMap());
+            modelBuilder.ApplyConfiguration(new PedidosMap());
+            modelBuilder.ApplyConfiguration(new ProdutosMap());
 
             base.OnModelCreating(modelBuilder);
         }

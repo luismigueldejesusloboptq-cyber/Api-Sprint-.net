@@ -4,18 +4,17 @@
     {
         public int IdItem { get; set; }
 
-        //fk//
+        // Chaves Estrangeiras (fk)
         public int IdPedido { get; set; }
-        public int IdPorduto { get; set; }
 
+        public int IdProduto { get; set; }
 
-        // campos//
+        // Campos
         public int Quantidade { get; set; }
-        public decimal PrecoUnitario    { get; set; }
+        public decimal PrecoUnitario { get; set; }
 
-        //relações//
-
+        // Relações
         public virtual Pedidos? Pedido { get; set; }
-        public virtual Produto? Produtos { get; set; }    
+        public virtual Produtos? Produto { get; set; }
     }
 }

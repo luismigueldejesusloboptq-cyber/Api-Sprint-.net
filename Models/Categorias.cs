@@ -3,10 +3,10 @@ namespace Api_Lanchonete_Sprint.Models
 {
     public class Categorias
     {
-        public int Idcategoria {  get; set; }
+        public int IdCategoria {  get; set; }
         public string Nome { get; set; } = string.Empty;
 
-        public virtual ICollection<Produto> Produtos { get; set; } = new List<Produtos>();
+        public virtual ICollection<Produtos> Produto { get; set; } = new List<Produtos>();
 
     }
 

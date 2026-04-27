@@ -13,8 +13,8 @@ namespace Api_Lanchonete_Sprint.Map
         {
             builder.ToTable("categorias");
 
-            builder.HasKey(c => c.Idcategoria);
-            builder.Property(c => c.Idcategoria).HasColumnName("id_categoria");
+            builder.HasKey(c => c.IdCategoria);
+            builder.Property(c => c.IdCategoria).HasColumnName("id_categoria");
 
             builder.Property(c => c.Nome)
                 .HasColumnName("nome")

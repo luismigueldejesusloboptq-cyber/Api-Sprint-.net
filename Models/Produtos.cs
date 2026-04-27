@@ -4,7 +4,7 @@ using Api_Lanchonete_Sprint.DTOs;
 
 namespace Api_Lanchonete_Sprint.Models
 {
-    public class Produto
+    public class Produtos
     {
         public int IdProduto { get; set; }
         public string Nome { get; set; }

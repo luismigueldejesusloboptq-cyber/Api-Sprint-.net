@@ -10,7 +10,7 @@ namespace Api_Lanchonete_Sprint.Models
     {
         public int IdPedido { get; set; }
         public DateTime DataPedido { get; set; } = DateTime.Now;
-        public String Nome { get; set; } = string.Empty;
+        public String ClienteNome { get; set; } = string.Empty;
         public int NumeroMesa { get; set; }
 
         //relações//
