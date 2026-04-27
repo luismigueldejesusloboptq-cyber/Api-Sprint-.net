@@ -1,0 +1,6 @@
+@Api_Lanchonete_Sprint_HostAddress = http://localhost:5291
+
+GET {{Api_Lanchonete_Sprint_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
