@@ -13,23 +13,23 @@ namespace Api_Lanchonete_Sprint.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<categorias>> GetAllAsync() => await _context.Categorias.ToListAsync();
+        public async Task<IEnumerable<Categorias>> GetAllAsync() => await _context.Categorias.ToListAsync();
 
-        public async Task<categorias?> GetByIdAsync(int id) => await _context.Categorias.FindAsync(id);
+        public async Task<Categorias?> GetByIdAsync(int id) => await _context.Categorias.FindAsync(id);
 
-        public async Task AddAsync(categorias categoria)
+        public async Task AddAsync(Categorias categoria)
         {
             await _context.Categorias.AddAsync(categoria);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(categorias categoria)
+        public async Task UpdateAsync(Categorias categoria)
         {
             _context.Categorias.Update(categoria);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(categorias categoria)
+        public async Task DeleteAsync(Categorias categoria)
         {
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
