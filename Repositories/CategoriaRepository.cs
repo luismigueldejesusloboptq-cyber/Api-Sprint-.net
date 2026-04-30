@@ -1,5 +1,6 @@
 ﻿using Api_Lanchonete_Sprint.Data;
 using Api_Lanchonete_Sprint.Models;
+using Api_Lanchonete_Sprint.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api_Lanchonete_Sprint.Repositories

@@ -1,6 +1,8 @@
-﻿using Api_Lanchonete_Sprint.DTOs;
+﻿using Api_Lanchonete_Sprint.DTOs.Request;
+using Api_Lanchonete_Sprint.DTOs.Response;
 using Api_Lanchonete_Sprint.Models;
-using Api_Lanchonete_Sprint.Repositories;
+using Api_Lanchonete_Sprint.Repositories.Interfaces;
+using Api_Lanchonete_Sprint.Services.Interfaces;
 
 namespace Api_Lanchonete_Sprint.Services
 {

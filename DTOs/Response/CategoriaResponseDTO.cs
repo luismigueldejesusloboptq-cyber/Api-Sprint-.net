@@ -1,4 +1,4 @@
-﻿namespace Api_Lanchonete_Sprint.DTOs
+﻿namespace Api_Lanchonete_Sprint.DTOs.Response
 {
     public class CategoriaResponseDTO
     {
