@@ -1,101 +1,88 @@
-﻿
-
-using Api_Lanchonete_Sprint.DTOs;
-using Api_Lanchonete_Sprint.Services.Interfaces;
+﻿using Api_Lanchonete_Sprint.DTOs;
+using Api_Lanchonete_Sprint.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FornecedoresController
-        : ControllerBase
+    public class PedidosController : ControllerBase
     {
-        private readonly IFornecedorService
-            _service;
+        private readonly IPedidoService _service;
 
-        public FornecedoresController(
-            IFornecedorService service)
+        public PedidosController(
+            IPedidoService service)
         {
             _service = service;
         }
 
+        
         // LISTAR TODOS
        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var fornecedores =
+            var pedidos =
                 await _service.GetAll();
 
-            return Ok(fornecedores);
+            return Ok(pedidos);
         }
 
-       
+        
         // BUSCAR POR ID
-       
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             int id)
         {
-            var fornecedor =
+            var pedido =
                 await _service.GetById(id);
 
-            if (fornecedor == null)
-            {
+            if (pedido == null)
                 return NotFound(
-                    "Fornecedor não encontrado."
+                    "Pedido não encontrado."
                 );
-            }
 
-            return Ok(fornecedor);
+            return Ok(pedido);
         }
 
-
         // CRIAR
-    
         [HttpPost]
         public async Task<IActionResult> Create(
-            [FromBody] FornecedorRequestDTO dto)
+            [FromBody] PedidoRequestDTO dto)
         {
-            var novoFornecedor =
+            var novoPedido =
                 await _service.Create(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
-                new
-                {
-                    id =
-                        novoFornecedor.IdFornecedor
-                },
-                novoFornecedor
+                new { id = novoPedido.IdPedido },
+                novoPedido
             );
         }
 
-
+        
         // ATUALIZAR
-
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
-            [FromBody] FornecedorRequestDTO dto)
+            [FromBody] PedidoRequestDTO dto)
         {
-            var fornecedorAtualizado =
+            var pedidoAtualizado =
                 await _service.Update(id, dto);
 
-            if (fornecedorAtualizado == null)
-            {
+            if (pedidoAtualizado == null)
                 return NotFound(
-                    "Fornecedor não encontrado."
+                    "Pedido não encontrado."
                 );
-            }
 
-            return Ok(fornecedorAtualizado);
+            return Ok(pedidoAtualizado);
         }
 
-        
+       
         // DELETAR
-        
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             int id)
@@ -104,11 +91,9 @@ namespace Api_Lanchonete_Sprint.Controllers
                 await _service.Delete(id);
 
             if (!deletado)
-            {
                 return NotFound(
-                    "Fornecedor não encontrado."
+                    "Pedido não encontrado."
                 );
-            }
 
             return NoContent();
         }
