@@ -1,4 +1,6 @@
-﻿namespace Api_Lanchonete_Sprint.DTOs
+﻿
+using Api_Lanchonete_Sprint.DTOs;
+namespace Api_Lanchonete_Sprint.DTOs
 {
     public class ProdutoRequestDTO
     {

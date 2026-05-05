@@ -19,7 +19,8 @@ namespace Api_Lanchonete_Sprint.Data
         public DbSet<ItensPedido> ItensPedidos { get; set; }
         public DbSet<Pedidos> pedidos { get; set; }
         
-        public DbSet<Produtos> produtosd { get; set; }
+        public DbSet<Produtos> produto { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +29,7 @@ namespace Api_Lanchonete_Sprint.Data
             modelBuilder.ApplyConfiguration(new ItensPedidoMap());
             modelBuilder.ApplyConfiguration(new PedidosMap());
             modelBuilder.ApplyConfiguration(new ProdutosMap());
+            modelBuilder.ApplyConfiguration(new UsuarioMap());
 
             base.OnModelCreating(modelBuilder);
         }

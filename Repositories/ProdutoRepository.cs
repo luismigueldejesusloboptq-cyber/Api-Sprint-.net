@@ -7,27 +7,27 @@ namespace Api_Lanchonete_Sprint.Repositories
     public class ProdutoRepository :
         IProdutoRepository
     {
-        private readonly AppDbContext _context;
+        private readonly LanchoneteContext _context;
 
         public ProdutoRepository(
-            AppDbContext context)
+           LanchoneteContext context)
         {
             _context = context;
         }
 
         public async Task<List<Produtos>> GetAll()
         {
-            return await _context.Produtos
-                .Include(p => p.Categoria)
-                .Include(p => p.Fornecedor)
+            return await _context.produto
+                .Include(p => p.Categorias)
+                .Include(p => p.Fornecedores)
                 .ToListAsync();
         }
 
         public async Task<Produtos?> GetById(int id)
         {
-            return await _context.Produtos
-                .Include(p => p.Categoria)
-                .Include(p => p.Fornecedor)
+            return await _context.produto
+                .Include(p => p.Categorias)
+                .Include(p => p.Fornecedores)
                 .FirstOrDefaultAsync(
                     p => p.IdProduto == id
                 );
@@ -36,7 +36,7 @@ namespace Api_Lanchonete_Sprint.Repositories
         public async Task<Produtos> Create(
             Produtos produto)
         {
-            await _context.Produtos
+            await _context.produto
                 .AddAsync(produto);
 
             await _context.SaveChangesAsync();
@@ -65,7 +65,7 @@ namespace Api_Lanchonete_Sprint.Repositories
             produtoExistente.IdFornecedor =
                 produto.IdFornecedor;
 
-            _context.Produtos.Update(
+            _context.produto.Update(
                 produtoExistente);
 
             await _context.SaveChangesAsync();
@@ -81,7 +81,7 @@ namespace Api_Lanchonete_Sprint.Repositories
             if (produto == null)
                 return false;
 
-            _context.Produtos.Remove(produto);
+            _context.produto.Remove(produto);
 
             await _context.SaveChangesAsync();
 

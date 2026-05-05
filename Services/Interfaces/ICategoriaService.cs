@@ -1,4 +1,7 @@
 ﻿using Api_Lanchonete_Sprint.DTOs;
+//using Api_Lanchonete_Sprint.DTOs.Request;
+using Api_Lanchonete_Sprint.DTOs.Response;
+
 namespace Api_Lanchonete_Sprint.Services.Interfaces
 {
     public interface ICategoriaService
@@ -6,7 +9,7 @@ namespace Api_Lanchonete_Sprint.Services.Interfaces
         Task<IEnumerable<CategoriaResponseDTO>> ListarTodas();
         Task<CategoriaResponseDTO?> BuscarPorId(int id);
         Task<CategoriaResponseDTO> Criar(CategoriaRequestDTO dto);
-        Task<bool> Atualizar(int id, CategoriaResponseDTO dto);
+        Task<bool> Atualizar(int id, CategoriaRequestDTO dto);
         Task<bool> Excluir(int id);
     }
 }

@@ -1,50 +1,112 @@
-﻿using Api_Lanchonete_Sprint.DTOs;
-using Api_Lanchonete_Sprint.Services;
+﻿
+
+using Api_Lanchonete_Sprint.DTOs;
+using Api_Lanchonete_Sprint.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CategoriasController : ControllerBase
     {
         private readonly ICategoriaService _service;
 
-        public CategoriasController(ICategoriaService service)
+        public CategoriasController(
+            ICategoriaService service)
         {
             _service = service;
         }
 
+        // LISTAR TODAS
+   
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoriaResponseDTO>>> Get()
-            => Ok(await _service.ListarTodas());
+        public async Task<IActionResult> GetAll()
+        {
+            var categorias =
+                await _service.ListarTodas();
 
+            return Ok(categorias);
+        }
+
+     
+        // BUSCAR POR ID
+       
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriaResponseDTO>> GetById(int id)
+        public async Task<IActionResult> GetById(
+            int id)
         {
-            var res = await _service.BuscarPorId(id);
-            return res == null ? NotFound() : Ok(res);
+            var categoria =
+                await _service.BuscarPorId(id);
+
+            if (categoria == null)
+            {
+                return NotFound(
+                    "Categoria não encontrada."
+                );
+            }
+
+            return Ok(categoria);
         }
 
+        // CRIAR
+       
         [HttpPost]
-        public async Task<ActionResult> Post(CategoriaRequestDTO dto)
+        public async Task<IActionResult> Create(
+            [FromBody] CategoriaRequestDTO dto)
         {
-            var criado = await _service.Criar(dto);
-            return CreatedAtAction(nameof(GetById), new { id = criado.IdCategoria }, criado);
+            var novaCategoria =
+                await _service.Criar(dto);
+
+            return Ok(novaCategoria);
         }
 
+       
+        // ATUALIZAR
+        
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id, CategoriaRequestDTO dto)
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody] CategoriaRequestDTO dto)
         {
-            var sucesso = await _service.Atualizar(id, dto);
-            return sucesso ? NoContent() : NotFound();
+            var atualizado =
+                await _service.Atualizar(
+                    id,
+                    dto
+                );
+
+            if (!atualizado)
+            {
+                return NotFound(
+                    "Categoria não encontrada."
+                );
+            }
+
+            return Ok(
+                "Categoria atualizada com sucesso."
+            );
         }
 
+       
+        // DELETAR
+       
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(
+            int id)
         {
-            var sucesso = await _service.Excluir(id);
-            return sucesso ? NoContent() : NotFound();
+            var deletado =
+                await _service.Excluir(id);
+
+            if (!deletado)
+            {
+                return NotFound(
+                    "Categoria não encontrada."
+                );
+            }
+
+            return Ok(
+                "Categoria deletada com sucesso."
+            );
         }
     }
 }
