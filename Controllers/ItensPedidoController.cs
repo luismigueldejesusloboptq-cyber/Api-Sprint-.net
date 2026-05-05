@@ -1,10 +1,11 @@
-﻿
-using Api_Lanchonete_Sprint.DTOs;
+﻿using Api_Lanchonete_Sprint.DTOs;
 using Api_Lanchonete_Sprint.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ItensPedidoController : ControllerBase
@@ -17,9 +18,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             _service = service;
         }
 
-        
         // LISTAR TODOS
-        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,9 +27,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(itens);
         }
 
-        
         // BUSCAR POR ID
-      
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,9 +43,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(item);
         }
 
-       
         // CRIAR
-        
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] ItemPedidoRequestDTO dto)
@@ -63,9 +58,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             );
         }
 
-        
         // ATUALIZAR
-        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -84,9 +77,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(itemAtualizado);
         }
 
-        
         // DELETAR
-      
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

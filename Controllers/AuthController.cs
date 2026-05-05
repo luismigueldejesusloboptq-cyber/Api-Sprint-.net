@@ -37,5 +37,24 @@ namespace Api_Lanchonete_Sprint.Controllers
 
             return Ok(resultado);
         }
+        [HttpPost("registrar")]
+        public async Task<IActionResult> Registrar(
+    [FromBody]
+    CadastroUsuarioDTO dto)
+        {
+            var resultado =
+                await _service.Registrar(dto);
+
+            if (!resultado)
+            {
+                return BadRequest(
+                    "Email já cadastrado."
+                );
+            }
+
+            return Ok(
+                "Usuário criado com sucesso."
+            );
+        }
     }
 }

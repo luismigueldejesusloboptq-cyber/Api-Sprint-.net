@@ -1,11 +1,11 @@
-﻿
-
-using Api_Lanchonete_Sprint.DTOs;
+﻿using Api_Lanchonete_Sprint.DTOs;
 using Api_Lanchonete_Sprint.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FornecedoresController
@@ -21,7 +21,6 @@ namespace Api_Lanchonete_Sprint.Controllers
         }
 
         // LISTAR TODOS
-       
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -31,9 +30,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(fornecedores);
         }
 
-       
         // BUSCAR POR ID
-       
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             int id)
@@ -51,9 +48,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(fornecedor);
         }
 
-
         // CRIAR
-    
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] FornecedorRequestDTO dto)
@@ -72,9 +67,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             );
         }
 
-
         // ATUALIZAR
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -93,9 +86,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(fornecedorAtualizado);
         }
 
-        
         // DELETAR
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             int id)

@@ -1,21 +1,19 @@
 ﻿using Api_Lanchonete_Sprint.DTOs;
+using Api_Lanchonete_Sprint.Models;
 using Api_Lanchonete_Sprint.Repositories.Interfaces;
 using Api_Lanchonete_Sprint.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
 namespace Api_Lanchonete_Sprint.Services
 {
-    public class AuthService :
-        IAuthService
+    public class AuthService : IAuthService
     {
-        private readonly IUsuarioRepository
-            _repository;
-
-        private readonly IConfiguration
-            _configuration;
+        private readonly IUsuarioRepository _repository;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
             IUsuarioRepository repository,
@@ -25,21 +23,27 @@ namespace Api_Lanchonete_Sprint.Services
             _configuration = configuration;
         }
 
-        public async Task<LoginResponseDTO?>
-            Login(LoginRequestDTO dto)
+        public async Task<LoginResponseDTO?> Login(LoginRequestDTO dto)
         {
-            var usuario =
-                await _repository
-                    .BuscarPorEmail(dto.Email);
+            var usuario = await _repository.BuscarPorEmail(dto.Email);
 
             if (usuario == null)
                 return null;
 
-            if (usuario.Senha != dto.Senha)
-                return null;
+            var passwordHasher = new PasswordHasher<Usuario>();
 
-            var token =
-                GerarToken(usuario);
+            var resultadoSenha = passwordHasher.VerifyHashedPassword(
+                usuario,
+                usuario.Senha,
+                dto.Senha
+            );
+
+            if (resultadoSenha == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
+
+            var token = GerarToken(usuario);
 
             return new LoginResponseDTO
             {
@@ -47,45 +51,58 @@ namespace Api_Lanchonete_Sprint.Services
             };
         }
 
-        private string GerarToken(
-            Models.Usuario usuario)
+        public async Task<bool> Registrar(CadastroUsuarioDTO dto)
         {
-            var key = Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"]
-            );
+            var usuarioExistente = await _repository.BuscarPorEmail(dto.Email);
 
-            var claims = new[]
+            if (usuarioExistente != null)
+                return false;
+
+            var usuario = new Usuario
             {
-                new Claim(
-                    ClaimTypes.Name,
-                    usuario.Email
-                )
+                Nome = dto.Nome,
+                Email = dto.Email
             };
 
-            var credentials =
-                new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256
-                );
+            var passwordHasher = new PasswordHasher<Usuario>();
 
-            var token = new JwtSecurityToken(
-                issuer:
-                    _configuration["Jwt:Issuer"],
+            usuario.Senha = passwordHasher.HashPassword(usuario, dto.Senha);
 
-                audience:
-                    _configuration["Jwt:Audience"],
+            await _repository.Criar(usuario);
 
-                claims: claims,
+            return true;
+        }
 
-                expires:
-                    DateTime.Now.AddHours(2),
+        private string GerarToken(Usuario usuario)
+        {
+            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "ChaveSecretaSuperLongaParaEvitarErrosDeCompilacao123!");
 
-                signingCredentials:
-                    credentials
+            var claimsDicionario = new Dictionary<string, object>
+            {
+                { JwtRegisteredClaimNames.Sub, usuario.IdUsuario.ToString() },
+                { JwtRegisteredClaimNames.Name, usuario.Nome },
+                { JwtRegisteredClaimNames.Email, usuario.Email }
+            };
+
+            var credentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256
             );
 
-            return new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: null,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            foreach (var claim in claimsDicionario)
+            {
+                token.Payload[claim.Key] = claim.Value;
+            }
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

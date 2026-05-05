@@ -1,9 +1,11 @@
 ﻿using Api_Lanchonete_Sprint.DTOs;
 using Api_Lanchonete_Sprint.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProdutosController : ControllerBase
@@ -16,9 +18,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             _service = service;
         }
 
-        
         // LISTAR TODOS
-        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,9 +28,7 @@ namespace Api_Lanchonete_Sprint.Controllers
             return Ok(produtos);
         }
 
-        
         // BUSCAR POR ID
-        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             int id)
@@ -39,15 +37,16 @@ namespace Api_Lanchonete_Sprint.Controllers
                 await _service.GetById(id);
 
             if (produto == null)
+            {
                 return NotFound(
                     "Produto não encontrado."
                 );
+            }
 
             return Ok(produto);
         }
 
         // CRIAR
-        
         [HttpPost]
         public async Task<IActionResult> Create(
             [FromBody] ProdutoRequestDTO dto)
@@ -57,14 +56,15 @@ namespace Api_Lanchonete_Sprint.Controllers
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = novoProduto.IdProduto },
+                new
+                {
+                    id = novoProduto.IdProduto
+                },
                 novoProduto
             );
         }
 
-      
         // ATUALIZAR
-        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -74,16 +74,16 @@ namespace Api_Lanchonete_Sprint.Controllers
                 await _service.Update(id, dto);
 
             if (produtoAtualizado == null)
+            {
                 return NotFound(
                     "Produto não encontrado."
                 );
+            }
 
             return Ok(produtoAtualizado);
         }
 
-     
         // DELETAR
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(
             int id)
@@ -92,9 +92,11 @@ namespace Api_Lanchonete_Sprint.Controllers
                 await _service.Delete(id);
 
             if (!deletado)
+            {
                 return NotFound(
                     "Produto não encontrado."
                 );
+            }
 
             return NoContent();
         }
