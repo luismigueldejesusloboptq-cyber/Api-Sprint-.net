@@ -21,13 +21,13 @@ builder.Services.AddDbContext<LanchoneteContext>(options =>
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>(); // ADICIONE ESTA LINHA
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // 4. REGISTRO DE SERVICES
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IFornecedorService, FornecedorService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<IAuthService, AuthService>(); // ADICIONE ESTA LINHA (Crucial para o Login)
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // 5. CORS
 builder.Services.AddCors(options => {
@@ -69,6 +69,11 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// CORREÇÃO AQUI: Configuração do wwwroot ANTES do MapControllers
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 
 app.Run();
