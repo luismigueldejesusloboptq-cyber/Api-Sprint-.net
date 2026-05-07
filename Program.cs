@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,14 +18,16 @@ var connectionString = builder.Configuration.GetConnectionString("ConexaoPadrao"
 builder.Services.AddDbContext<LanchoneteContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// 3. REGISTRO DE REPOSITORIES
+// 3. REGISTRO DE REPOSITORIES (Adicionado o de Produtos!)
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>(); // <-- Faltava este
 builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-// 4. REGISTRO DE SERVICES
+// 4. REGISTRO DE SERVICES (Adicionado o de Produtos!)
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>(); // <-- Faltava este
 builder.Services.AddScoped<IFornecedorService, FornecedorService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -52,13 +55,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllers();
+// AJUSTE: Controllers com tratamento de loop de JSON
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 7. MIDDLEWARES
+// 7. MIDDLEWARES E ARQUIVOS ESTÁTICOS
+DefaultFilesOptions defaultFilesOptions = new DefaultFilesOptions();
+defaultFilesOptions.DefaultFileNames.Clear();
+defaultFilesOptions.DefaultFileNames.Add("login.html");
+app.UseDefaultFiles(defaultFilesOptions);
+app.UseStaticFiles();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -69,11 +83,5 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-
-// CORREÇÃO AQUI: Configuração do wwwroot ANTES do MapControllers
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
 app.MapControllers();
-
 app.Run();

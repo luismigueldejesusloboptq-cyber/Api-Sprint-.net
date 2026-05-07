@@ -2,42 +2,87 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Lanchonete</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background: #f4f7f6;
-            display: flex;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .login-card {
-            max-width: 400px;
-            margin: auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        body { background: #e9ecef; height: 100vh; display: flex; align-items: center; margin: 0; }
+        .login-card { max-width: 400px; margin: auto; padding: 2.5rem; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="login-card">
-            <h2 class="text-center mb-4">Acesso ao Dashboard</h2>
+            <h2 class="text-center mb-4">Lanchonete System</h2>
+            
             <div class="mb-3">
+                <label for="email" class="form-label">E-mail</label>
                 <input type="email" id="email" class="form-control" placeholder="Seu email" required>
             </div>
+            
             <div class="mb-3">
+                <label for="senha" class="form-label">Senha</label>
                 <input type="password" id="senha" class="form-control" placeholder="Sua senha" required>
             </div>
-            <button class="btn btn-primary w-100" onclick="fazerLogin()">Entrar</button>
+            
+            <button type="button" class="btn btn-primary w-100" onclick="fazerLogin()">Entrar</button>
+            
+            <div class="mt-3 text-center">
+                <small>Novo por aqui? <a href="registrar.html">Crie sua conta</a></small>
+            </div>
+            
             <p id="mensagemErro" class="text-danger mt-3 text-center" style="display: none;"></p>
         </div>
     </div>
 
-    <script src="login.html"></script>
+    <script>
+        async function fazerLogin() {
+            const emailInput = document.getElementById("email");
+            const senhaInput = document.getElementById("senha");
+            const erroDisplay = document.getElementById("mensagemErro");
+
+            const email = emailInput.value.trim();
+            const senha = senhaInput.value;
+
+            // Limpa erros anteriores
+            erroDisplay.style.display = "none";
+
+            if (!email || !senha) {
+                erroDisplay.innerText = "Preencha todos os campos!";
+                erroDisplay.style.display = "block";
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        email: email, 
+                        senha: senha 
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Salva o Token JWT no navegador
+                    localStorage.setItem("token_jwt", data.token);
+
+                    // Redireciona para o Dashboard
+                    window.location.href = "dashboard.html";
+                } else {
+                    // Tenta ler a mensagem de erro da API ou usa uma padrão
+                    const msg = await response.text();
+                    erroDisplay.innerText = msg || "E-mail ou senha incorretos.";
+                    erroDisplay.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Erro:", error);
+                erroDisplay.innerText = "Erro ao conectar com a API. Verifique o servidor.";
+                erroDisplay.style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>

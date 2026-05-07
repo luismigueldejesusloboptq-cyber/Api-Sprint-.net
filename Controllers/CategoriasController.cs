@@ -2,10 +2,12 @@
 
 using Api_Lanchonete_Sprint.DTOs;
 using Api_Lanchonete_Sprint.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Lanchonete_Sprint.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriasController : ControllerBase
