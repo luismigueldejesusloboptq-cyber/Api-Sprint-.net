@@ -21,6 +21,7 @@ namespace Api_Lanchonete_Sprint.Controllers
         }
 
         // LISTAR TODOS
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -31,6 +32,7 @@ namespace Api_Lanchonete_Sprint.Controllers
         }
 
         // BUSCAR POR ID
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(
             int id)

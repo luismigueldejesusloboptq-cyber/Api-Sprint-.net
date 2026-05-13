@@ -20,6 +20,7 @@ namespace Api_Lanchonete_Sprint.Data
         public DbSet<Pedidos> pedidos { get; set; }
         
         public DbSet<Produtos> produto { get; set; }
+
         public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

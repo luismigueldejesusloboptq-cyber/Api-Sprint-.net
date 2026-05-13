@@ -1,7 +1,9 @@
-﻿// 1. BLOQUEIO DE SEGURANÇA IMEDIATO
-// Esta função roda assim que o arquivo é lido para impedir acesso sem login
+﻿// ==========================================
+// 1. BLOQUEIO DE SEGURANÇA IMEDIATO
+// ==========================================
 const token = localStorage.getItem("token_jwt");
 
+// Se não houver token ou for inválido, expulsa antes de carregar o resto
 if (!token || token === "undefined" || token === "null") {
     alert("Acesso negado! Por favor, faça login.");
     window.location.href = "login.html";
@@ -9,10 +11,12 @@ if (!token || token === "undefined" || token === "null") {
 
 let carrinho = [];
 
+// ==========================================
+// 2. CARREGAR PRODUTOS DA API
+// ==========================================
 async function carregarProdutos() {
     const container = document.getElementById('lista-produtos');
 
-    // 1. Tenta buscar os dados
     try {
         const response = await fetch('/api/produtos', {
             method: 'GET',
@@ -22,7 +26,7 @@ async function carregarProdutos() {
             }
         });
 
-        // Se o token estiver vencido ou errado
+        // Caso o token tenha expirado ou seja inválido na API
         if (response.status === 401) {
             alert("Sessão expirada. Faça login novamente.");
             logout();
@@ -31,11 +35,13 @@ async function carregarProdutos() {
 
         const produtos = await response.json();
 
-        if (produtos.length === 0) {
-            container.innerHTML = `<div class="alert alert-info w-100 text-center">Banco de dados vazio.</div>`;
+        if (!produtos || produtos.length === 0) {
+            container.innerHTML = `<div class="alert alert-info w-100 text-center">Nenhum produto encontrado no cardápio.</div>`;
         } else {
             container.innerHTML = produtos.map(p => {
-                const idAtual = p.id_produto || p.idProduto;
+                // Tenta pegar o ID tanto como idProduto quanto id_produto (garantia)
+                const idAtual = p.idProduto || p.id_produto || p.id;
+
                 return `
                     <div class="col-md-6">
                         <div class="card h-100 produto-card p-3">
@@ -53,21 +59,28 @@ async function carregarProdutos() {
 
     } catch (err) {
         console.error("Erro na API:", err);
-        container.innerHTML = `<div class="alert alert-danger w-100">Erro ao carregar produtos. Verifique se a API está rodando.</div>`;
+        container.innerHTML = `<div class="alert alert-danger w-100">Erro ao carregar produtos. Verifique se o servidor está online.</div>`;
     } finally {
-        // 2. IMPORTANTE: Libera a visualização da página independente de ter erro ou não
+        // Torna o corpo da página visível após a verificação
         document.body.style.display = "block";
     }
 }
 
+// ==========================================
 // 3. REGRAS DO CARRINHO
+// ==========================================
 window.adicionarAoCarrinho = (id, nome, preco) => {
     const itemExistente = carrinho.find(i => i.idProduto === id);
+
     if (itemExistente) {
         itemExistente.quantidade++;
     } else {
-        // Removido o erro 'Medical' que estava aqui
-        carrinho.push({ idProduto: id, nome, preco, quantidade: 1 });
+        carrinho.push({
+            idProduto: id,
+            nome: nome,
+            preco: preco,
+            quantidade: 1
+        });
     }
     renderizarCarrinho();
 };
@@ -96,13 +109,13 @@ function renderizarCarrinho() {
         const subtotal = item.preco * item.quantidade;
         total += subtotal;
         return `
-            <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded shadow-sm">
                 <div>
                     <span class="fw-bold small">${item.quantidade}x</span> <span class="small">${item.nome}</span>
                 </div>
                 <div class="text-end">
                     <span class="small d-block fw-bold">R$ ${subtotal.toFixed(2)}</span>
-                    <button class="btn btn-sm p-0 text-danger small" style="font-size:0.75rem" onclick="removerItem(${index})">Remover</button>
+                    <button class="btn btn-sm p-0 text-danger" style="font-size:0.7rem" onclick="removerItem(${index})">Remover</button>
                 </div>
             </div>
         `;
@@ -111,14 +124,16 @@ function renderizarCarrinho() {
     totalSpan.innerText = `R$ ${total.toFixed(2)}`;
 }
 
+// ==========================================
 // 4. FINALIZAR PEDIDO (ENVIO PARA API)
+// ==========================================
 window.finalizarPedido = async () => {
-    const nomeCliente = prompt("Informe o nome do cliente:");
+    const nomeCliente = prompt("Informe o nome para o pedido:");
     if (!nomeCliente) return;
 
     const pedidoData = {
         clienteNome: nomeCliente,
-        numeroMesa: Math.floor(Math.random() * 15) + 1,
+        numeroMesa: Math.floor(Math.random() * 20) + 1, // Simula uma mesa
         itens: carrinho.map(i => ({
             idProduto: i.idProduto,
             quantidade: i.quantidade,
@@ -137,7 +152,7 @@ window.finalizarPedido = async () => {
         });
 
         if (response.ok) {
-            alert("Pedido enviado com sucesso para a API!");
+            alert("🎉 Pedido enviado com sucesso!");
             carrinho = [];
             renderizarCarrinho();
         } else {
@@ -149,11 +164,13 @@ window.finalizarPedido = async () => {
     }
 };
 
+// ==========================================
 // 5. LOGOUT
+// ==========================================
 window.logout = () => {
     localStorage.removeItem("token_jwt");
     window.location.href = "login.html";
 };
 
-// Iniciar a listagem automaticamente
+// Iniciar a listagem automaticamente quando a página carregar
 document.addEventListener('DOMContentLoaded', carregarProdutos);
